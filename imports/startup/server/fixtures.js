@@ -9,7 +9,7 @@ Meteor.startup(() => {
     const fuelStations = JSON.parse(Assets.getText('alt_fuel_stations.json'));
 
     console.log(
-      `Seeding DB with ${fuelStations.fuel_stations.length} documents`
+      `Seeding DB with ${fuelStations.fuel_stations.length} documents`,
     );
     console.log('Seeding DB...');
 
@@ -23,8 +23,8 @@ Meteor.startup(() => {
         ...location,
         location: {
           type: 'Point',
-          coordinates: [location.longitude, location.latitude]
-        }
+          coordinates: [location.longitude, location.latitude],
+        },
       });
     });
     bulkLocationsOp.executeSync();

@@ -1,0 +1,46 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "allowImportExportEverywhere": true
+  },
+  "plugins": ["meteor"],
+  "extends": ["equimper", "prettier", "plugin:meteor/recommended"],
+  "rules": {
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off",
+    "meteor/no-session": "off",
+    "object-shorthand": [
+      "error",
+      "always",
+      {
+        "avoidQuotes": false
+      }
+    ],
+    "meteor/eventmap-params": [
+      "error",
+      {
+        "eventParamName": "event",
+        "templateInstanceParamName": "instance"
+      }
+    ],
+    "meteor/template-names": ["off"],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "prefer-arrow-callback": "off"
+  },
+  "settings": {
+    "import/resolver": "meteor"
+  }
+}
