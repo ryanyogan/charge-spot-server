@@ -7,5 +7,11 @@
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "meteor-node-stubs": "^0.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-config-equimper": "^2.2.1",
+    "eslint-config-prettier": "^2.9.0",
+    "prettier": "^1.10.2"
   }
 }
