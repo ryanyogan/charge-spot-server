@@ -32,14 +32,48 @@ export const changeCheckInStatus = new ValidatedMethod({
     locationId: { type: String },
     status: { type: String, allowedValues: ['in', 'out'] },
   }).validator(),
-
   run({ locationId, status }) {
-    const location = Locations.findOne({ _id: locationId });
+    if (!this.userId) {
+      throw new Meteor.Error(
+        'Locations.changeCheckIn.notLoggedIn',
+        'Must be logged in to change checkin status.',
+      );
+    }
 
+    const location = Locations.findOne({ _id: locationId });
     if (!location) {
       throw new Meteor.Error(
         'Locations.changeCheckIn.invalidLocationId',
-        'Must pass a valid location id (_id) to change check-in status.',
+        'Must pass a valid location id to change checkin status.',
+      );
+    }
+
+    if (status === 'in' && location.checkedInUserId === this.userId) {
+      throw new Meteor.Error(
+        'Locations.changeCheckIn.checkedInByUser',
+        "You're already checked in at this location.",
+      );
+    }
+
+    if (status === 'in' && typeof location.checkedInUserId === 'string') {
+      throw new Meteor.Error(
+        'Locations.changeCheckIn.checkedInByDifferentUser',
+        'Someone is already checked in at this location.',
+      );
+    }
+
+    if (status === 'out' && location.checkedInUserId !== this.userId) {
+      throw new Meteor.Error(
+        'Locations.changeCheckIn.notCheckedInHere',
+        "You're not checked into this location.",
+      );
+    }
+
+    const existingCheckin = Locations.findOne({ checkedInUserId: this.userId });
+    if (status === 'in' && existingCheckin) {
+      throw new Meteor.Error(
+        'Locations.changeCheckIn.checkedInElsewhere',
+        "You're already checked in at a different location.",
       );
     }
 
@@ -48,7 +82,7 @@ export const changeCheckInStatus = new ValidatedMethod({
         { _id: locationId },
         {
           $set: {
-            checkedInUserId: 'temp',
+            checkedInUserId: this.userId,
           },
         },
       );
@@ -65,8 +99,8 @@ export const changeCheckInStatus = new ValidatedMethod({
 
     Activity.insert({
       createdAt: new Date(),
-      username: 'temp',
-      userId: 'temp',
+      username: Meteor.user().username,
+      userId: this.userId,
       type: status,
       locationId,
     });
